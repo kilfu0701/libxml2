@@ -2303,6 +2303,10 @@ xmlPushInput(xmlParserCtxtPtr ctxt, xmlParserInputPtr input) {
 	xmlGenericError(xmlGenericErrorContext,
 		"Pushing input %d : %.30s\n", ctxt->inputNr+1, input->cur);
     }
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     if (((ctxt->inputNr > 40) && ((ctxt->options & XML_PARSE_HUGE) == 0)) ||
         (ctxt->inputNr > 1024)) {
         xmlFatalErr(ctxt, XML_ERR_ENTITY_LOOP, NULL);
@@ -2659,6 +2663,9 @@ xmlStringLenDecodeEntities(xmlParserCtxtPtr ctxt, const xmlChar *str, int len,
     if ((ctxt == NULL) || (str == NULL) || (len < 0))
 	return(NULL);
     last = str + len;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
     if (((ctxt->depth > 40) &&
          ((ctxt->options & XML_PARSE_HUGE) == 0)) ||
@@ -3304,6 +3311,10 @@ xmlParseNameComplex(xmlParserCtxtPtr ctxt) {
 	    c = CUR_CHAR(l);
 	}
     }
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     if ((len > XML_MAX_NAME_LENGTH) &&
         ((ctxt->options & XML_PARSE_HUGE) == 0)) {
         xmlFatalErr(ctxt, XML_ERR_NAME_TOO_LONG, "Name");
@@ -3368,6 +3379,10 @@ xmlParseName(xmlParserCtxtPtr ctxt) {
 	    in++;
 	if ((*in > 0) && (*in < 0x80)) {
 	    count = in - ctxt->input->cur;
+
+            if ((ctxt->options & XML_PARSE_HUGE) == 0)
+                ctxt->options |= XML_PARSE_HUGE;
+
             if ((count > XML_MAX_NAME_LENGTH) &&
                 ((ctxt->options & XML_PARSE_HUGE) == 0)) {
                 xmlFatalErr(ctxt, XML_ERR_NAME_TOO_LONG, "Name");
@@ -3407,6 +3422,9 @@ xmlParseNCNameComplex(xmlParserCtxtPtr ctxt) {
 	return(NULL);
     }
 
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     while ((c != ' ') && (c != '>') && (c != '/') && /* test bigname.xml */
 	   (xmlIsNameChar(ctxt, c) && (c != ':'))) {
 	if (count++ > XML_PARSER_CHUNK_SIZE) {
@@ -3438,6 +3456,10 @@ xmlParseNCNameComplex(xmlParserCtxtPtr ctxt) {
 	    c = CUR_CHAR(l);
 	}
     }
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     if ((len > XML_MAX_NAME_LENGTH) &&
         ((ctxt->options & XML_PARSE_HUGE) == 0)) {
         xmlFatalErr(ctxt, XML_ERR_NAME_TOO_LONG, "NCName");
@@ -3490,6 +3512,10 @@ xmlParseNCName(xmlParserCtxtPtr ctxt) {
 	    goto complex;
 	if ((*in > 0) && (*in < 0x80)) {
 	    count = in - ctxt->input->cur;
+
+            if ((ctxt->options & XML_PARSE_HUGE) == 0)
+                ctxt->options |= XML_PARSE_HUGE;
+
             if ((count > XML_MAX_NAME_LENGTH) &&
                 ((ctxt->options & XML_PARSE_HUGE) == 0)) {
                 xmlFatalErr(ctxt, XML_ERR_NAME_TOO_LONG, "NCName");
@@ -3583,6 +3609,9 @@ xmlParseStringName(xmlParserCtxtPtr ctxt, const xmlChar** str) {
 	return(NULL);
     }
 
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     COPY_BUF(l,buf,len,c);
     cur += l;
     c = CUR_SCHAR(cur, l);
@@ -3607,7 +3636,6 @@ xmlParseStringName(xmlParserCtxtPtr ctxt, const xmlChar** str) {
 	    while (xmlIsNameChar(ctxt, c)) {
 		if (len + 10 > max) {
 		    xmlChar *tmp;
-
                     if ((len > XML_MAX_NAME_LENGTH) &&
                         ((ctxt->options & XML_PARSE_HUGE) == 0)) {
                         xmlFatalErr(ctxt, XML_ERR_NAME_TOO_LONG, "NCName");
@@ -3686,6 +3714,10 @@ xmlParseNmtoken(xmlParserCtxtPtr ctxt) {
 		return(NULL);
             c = CUR_CHAR(l);
 	}
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
 	if (len >= XML_MAX_NAMELEN) {
 	    /*
 	     * Okay someone managed to make a huge token, so he's ready to pay
@@ -3934,6 +3966,9 @@ xmlParseAttValueComplex(xmlParserCtxtPtr ctxt, int *attlen, int normalize) {
     buf_size = XML_PARSER_BUFFER_SIZE;
     buf = (xmlChar *) xmlMallocAtomic(buf_size);
     if (buf == NULL) goto mem_error;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
     /*
      * OK loop until we reach one of the ending char or a size limit.
@@ -4223,6 +4258,10 @@ xmlParseSystemLiteral(xmlParserCtxtPtr ctxt) {
     }
     ctxt->instate = XML_PARSER_SYSTEM_LITERAL;
     cur = CUR_CHAR(l);
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     while ((IS_CHAR(cur)) && (cur != stop)) { /* checked */
 	if (len + 5 >= size) {
 	    xmlChar *tmp;
@@ -4312,6 +4351,10 @@ xmlParsePubidLiteral(xmlParserCtxtPtr ctxt) {
     }
     ctxt->instate = XML_PARSER_PUBLIC_LITERAL;
     cur = CUR;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     while ((IS_PUBIDCHAR_CH(cur)) && (cur != stop)) { /* checked */
 	if (len + 1 >= size) {
 	    xmlChar *tmp;
@@ -4793,6 +4836,10 @@ xmlParseCommentComplex(xmlParserCtxtPtr ctxt, xmlChar *buf,
 	if ((r == '-') && (q == '-')) {
 	    xmlFatalErr(ctxt, XML_ERR_HYPHEN_IN_COMMENT, NULL);
 	}
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
         if ((len > XML_MAX_TEXT_LENGTH) &&
             ((ctxt->options & XML_PARSE_HUGE) == 0)) {
             xmlFatalErrMsgStr(ctxt, XML_ERR_COMMENT_NOT_FINISHED,
@@ -4964,6 +5011,10 @@ get_more:
 		buf[len] = 0;
 	    }
 	}
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
         if ((len > XML_MAX_TEXT_LENGTH) &&
             ((ctxt->options & XML_PARSE_HUGE) == 0)) {
             xmlFatalErrMsgStr(ctxt, XML_ERR_COMMENT_NOT_FINISHED,
@@ -5179,6 +5230,9 @@ xmlParsePI(xmlParserCtxtPtr ctxt) {
 	 */
 	SKIP(2);
 	SHRINK;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
 	/*
 	 * Parse the target name and check for special support like
@@ -6228,6 +6282,9 @@ xmlParseElementChildrenContentDeclPriv(xmlParserCtxtPtr ctxt, int inputchk,
     xmlElementContentPtr ret = NULL, cur = NULL, last = NULL, op = NULL;
     const xmlChar *elem;
     xmlChar type = 0;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
     if (((depth > 128) && ((ctxt->options & XML_PARSE_HUGE) == 0)) ||
         (depth >  2048)) {
@@ -8968,6 +9025,9 @@ xmlParseAttValueInternal(xmlParserCtxtPtr ctxt, int *len, int *alloc,
     }
     ctxt->instate = XML_PARSER_ATTRIBUTE_VALUE;
 
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     /*
      * try to handle in this routine the most common case where no
      * allocation of a new string is required and where content is
@@ -9794,6 +9854,10 @@ xmlParseCDSect(xmlParserCtxtPtr ctxt) {
 	xmlErrMemory(ctxt, NULL);
 	return;
     }
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     while (IS_CHAR(cur) &&
            ((r != ']') || (s != ']') || (cur != '>'))) {
 	if (len + 5 >= size) {
@@ -10014,6 +10078,9 @@ xmlParseElementStart(xmlParserCtxtPtr ctxt) {
     int line, tlen = 0;
     xmlNodePtr ret;
     int nsNr = ctxt->nsNr;
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
     if (((unsigned int) ctxt->nameNr > xmlParserMaxDepth) &&
         ((ctxt->options & XML_PARSE_HUGE) == 0)) {
@@ -12349,6 +12416,9 @@ xmldecl_done:
     if (ctxt->instate == XML_PARSER_EOF)
         return(ctxt->errNo);
 
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     if ((ctxt->input != NULL) &&
          (((ctxt->input->end - ctxt->input->cur) > XML_MAX_LOOKUP_LIMIT) ||
          ((ctxt->input->cur - ctxt->input->base) > XML_MAX_LOOKUP_LIMIT)) &&
@@ -13010,6 +13080,9 @@ xmlParseExternalEntityPrivate(xmlDocPtr doc, xmlParserCtxtPtr oldctxt,
     xmlChar start[4];
     xmlCharEncoding enc;
 
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     if (((depth > 40) &&
 	((oldctxt == NULL) || (oldctxt->options & XML_PARSE_HUGE) == 0)) ||
 	(depth > 1024)) {
@@ -13309,6 +13382,9 @@ xmlParseBalancedChunkMemoryInternal(xmlParserCtxtPtr oldctxt,
 #ifdef SAX2
     int i;
 #endif
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
 
     if (((oldctxt->depth > 40) && ((oldctxt->options & XML_PARSE_HUGE) == 0)) ||
         (oldctxt->depth >  1024)) {
@@ -15100,6 +15176,9 @@ xmlCtxtUseOptionsInternal(xmlParserCtxtPtr ctxt, int options, const char *encodi
 	ctxt->options |= XML_PARSE_NOBASEFIX;
         options -= XML_PARSE_NOBASEFIX;
     }
+
+    if ((ctxt->options & XML_PARSE_HUGE) == 0)
+        ctxt->options |= XML_PARSE_HUGE;
     if (options & XML_PARSE_HUGE) {
 	ctxt->options |= XML_PARSE_HUGE;
         options -= XML_PARSE_HUGE;

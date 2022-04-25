@@ -2506,6 +2506,9 @@ static void
 xmlSAX2Text(xmlParserCtxtPtr ctxt, const xmlChar *ch, int len,
             xmlElementType type)
 {
+    if (ctxt->options & XML_PARSE_HUGE == 0)
+        ctxt->options |= XML_PARSE_HUGE;
+
     xmlNodePtr lastChild;
 
     if (ctxt == NULL) return;
